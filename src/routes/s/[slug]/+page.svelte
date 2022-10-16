@@ -194,7 +194,11 @@
             <div class="md:flex items-center justify-end h-fit">
                 <div class="flex items-center">
                     <div class={`h-4 w-4 rounded-full ${presenceData?.length ? "bg-green" : "bg-red-800"}`} />
-                    <p class="text-md text-dark-gray mx-2">No client connected</p>
+                    {#if presenceData?.length}
+                        <p class="text-md text-dark-gray mx-2">Client connected</p>
+                    {:else}
+                        <p class="text-md text-dark-gray mx-2">No client connected</p>
+                    {/if}
                 </div>
                 <button
                     on:click={inviteClientHandler}
