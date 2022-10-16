@@ -1,6 +1,8 @@
-<script>
+<script lang="ts">
     import CopyClipBoard from "./CopyClipBoard.svelte";
     import Icon from '../Icons/Icon.svelte';
+    
+    export let name: string;
 </script>
 
 <div>
@@ -16,7 +18,7 @@
         </div>
     </div>
     <div class="my-8">
-        <CopyClipBoard name="theclienturl" />
+        <CopyClipBoard name={name} />
     </div>
     <div class="bg-medium-gray p-6 rounded-md">
         <button

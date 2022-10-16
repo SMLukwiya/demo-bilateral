@@ -1,27 +1,36 @@
 <script lang="ts">
     import {goto} from "$app/navigation";
     import * as Ably from "ably";
-    // import {SpinLine} from "svelte-loading-spinners";
+    import {Chasing} from "svelte-loading-spinners";
     import NavBar from "../../components/navbar/nav_1.svelte";
 
     let ably_key = import.meta.env.VITE_ABLY_PUBSUB_APIKEY // TODO: handle env better
+    let channel = null;
 
     const ably = new Ably.Realtime({key: ably_key});
 
     let name = "";
     let isSessionCreating = false;
 
+    // generate 2 letter extension
+    const randomExt = Math.random().toString(36).slice(-2);
+
     async function connect() {
-        const ably = new Ably.Realtime.Promise('yxe0yw.pntSgA:R4JsvujUoZZzmQViwHLpEtrk4tteyIG_YrWT6TjlVrc');
+        const ably = new Ably.Realtime.Promise(ably_key);
         await ably.connection.once('connected');
+
         console.log('Connected to Ably!');
     }
 
     const handleSubmit = async (e: Event) => {
         isSessionCreating = true
+        if (!sessionStorage.getItem('isTherapist')) {
+            sessionStorage.setItem("isTherapist", JSON.stringify({value: true}));
+        }
         await connect();
+        channel = ably.channels.get("session");
         isSessionCreating = false
-        goto(`s/${name}-session`)
+        goto(`s/${name}-${randomExt}`)
     }
     
 </script>
@@ -44,13 +53,16 @@
                         class="block w-full p-3 mr-3 border border-gray rounded-md placeholder-gray shadow-sm focus:border-green focus:ring-green"
                         required
                     />
-                    <div class="w-full mt-4 sm:mt-0">
+                    <div class="flex w-full mt-4 sm:mt-0">
                         <button 
                             type="submit" 
-                            class="block w-full bg-light-gray py-3 px-8 rounded-md border border-gray text-dark-gray disabled:text-gray"
-                            disabled={name.length < 3}>
+                            class="block w-full bg-green py-3 px-8 mr-1 rounded-md border border-gray text-white disabled:text-gray disabled:bg-light-gray transition-all"
+                            disabled={name.length < 3 || isSessionCreating}>
                             Create session
                         </button>
+                        {#if isSessionCreating}
+                            <Chasing size="20" color="#191a19" unit="px" duration="1s" />
+                        {/if}
                     </div>
                 </div>
                 <ul class="list-disc ml-3 mt-2 text-gray">

@@ -3,6 +3,7 @@
     import {copy} from "svelte-copy";
 
     export let name: string;
+    let copyText = "Copy";
 </script>
 
 <div class="flex">
@@ -13,11 +14,11 @@
     <div class=" bg-green border border-dark-gray rounded-r-md px-5">
         <button 
             use:copy={name}
-            on:svelte-copy={(event) => alert(event.detail)}
+            on:svelte-copy={() => copyText = "Copied"}
             class="h-full text-white flex items-center"
             >
             <Icon label="copy" colour="#fff" width={26} icon="ion:copy-outline" />
-            <p class="ml-4">Copy</p>
+            <p class="ml-4">{copyText}</p>
         </button>
     </div>
 </div>

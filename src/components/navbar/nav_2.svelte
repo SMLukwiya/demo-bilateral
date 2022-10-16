@@ -18,11 +18,11 @@
     </div>
     <div>
         <button 
-            class="bg-white border border-dark-gray rounded-md py-2 px-4 font-medium text-dark-gray"
+            class="bg-white border border-dark-gray rounded-md py-2 px-4 font-medium text-dark-gray hover:scale-105 transition-all"
             >LOGIN
         </button>
         <button 
-            class="bg-green rounded-md border border-green py-2 px-12 font-medium text-white ml-2">
+            class="bg-green rounded-md border border-green py-2 px-12 font-medium text-white ml-2 hover:scale-105 transition-all">
             SIGN UP
         </button>
     </div>
