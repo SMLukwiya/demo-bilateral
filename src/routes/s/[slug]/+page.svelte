@@ -34,6 +34,7 @@
     let channel: Ably.Types.RealtimeChannelCallbacks;
     let ably: Ably.Types.RealtimeCallbacks;
     let presenceData: Ably.Types.PresenceMessage[] | undefined = [];
+    let rangeInput: HTMLInputElement;
 
     onMount(() => {
         isModalOpen.set(true);
@@ -176,9 +177,11 @@
     }
 
     $: {
-        bg_size = (+value * 10);
         minutes = Math.floor((timer % (1000 * 60 * 60)) / (1000 * 60));
         seconds = Math.floor((timer % (1000 * 60)) / 1000);
+        if (rangeInput) {
+            bg_size= ((+value - +rangeInput.min)/(+rangeInput.max - +rangeInput.min)) * 100
+        }
     }
 
 </script>
@@ -193,12 +196,13 @@
         <div class="grid px-4 gap-3 h-full">
             <div class="md:flex items-center justify-end h-fit">
                 <div class="flex items-center">
-                    <div class={`h-4 w-4 rounded-full ${presenceData?.length ? "bg-green" : "bg-red-800"}`} />
+                    <div class={`h-3 w-3 lg:h-4 lg:w-4 rounded-full ${presenceData?.length ? "bg-green" : "bg-red-800"}`} />
                     {#if presenceData?.length}
-                        <p class="text-md text-dark-gray mx-2">Client connected</p>
+                        <p class="hidden lg:flex text-md text-dark-gray mx-2">Client connected</p>
                     {:else}
-                        <p class="text-md text-dark-gray mx-2">No client connected</p>
+                        <p class="hidden lg:flex text-md text-dark-gray mx-2">No client connected</p>
                     {/if}
+                    <p class="lg:hidden text-md text-dark-gray mx-2">Client</p>
                 </div>
                 <button
                     on:click={inviteClientHandler}
@@ -295,13 +299,14 @@
                         <input 
                             type="range" 
                             min="0.5" 
-                            max="10" 
+                            max="9.5" 
                             step="0.5"
                             bind:value
+                            bind:this={rangeInput}
                             on:input={changeSpeed}
                             disabled={stopping}
                             id="range"
-                            class="bg-light-gray w-full cursor-pointer transition: all .5s linear"
+                            class="bg-light-gray w-full cursor-pointer linear"
                             style={`background-size: ${bg_size}%;`}>
                     </div>
                 </div>
