@@ -134,11 +134,11 @@
 </script>
 
 <main>
-    <div class="w-full h-full absolute top-0 left-0 bg-gray" style={`background-color: ${bgColor}`}>
+    <div class="w-full h-full overflow-hidden absolute top-0 left-0 bg-gray" style={`background-color: ${bgColor}`}>
         <div 
             id="client"
             style={`left: 48%; top: 49%; transform: translate(${(left-50)}%) translate3d(0px,0px,0px); ${addStoppingTransform ? `transform: translate(0%); transition: transform 1.5s ease-out` : ""}`}
-            class="absolute w-full will-change-transform">
+            class="absolute w-full will-change-transform bg-red-500">
             <div class="absolute rounded-full w-16 h-16" style={`background-color: ${color}`}></div>
         </div>
     </div>
