@@ -36,10 +36,12 @@
     let presenceData: Ably.Types.PresenceMessage[] | undefined = [];
     let rangeInput: HTMLInputElement;
 
+    const url = $page.url.pathname.split("/");
+
     onMount(() => {
         isModalOpen.set(true);
         ably = new Ably.Realtime({key: ably_key});
-        channel = ably.channels.get('session');
+        channel = ably.channels.get(url[url.length - 1]);
 
         channel.presence.subscribe(() => {
             channel.presence.get((err, members) => {

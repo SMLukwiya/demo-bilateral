@@ -28,7 +28,7 @@
             sessionStorage.setItem("isTherapist", JSON.stringify({value: true}));
         }
         await connect();
-        channel = ably.channels.get("session");
+        channel = ably.channels.get(`${name}-${randomExt}`);
         isSessionCreating = false
         goto(`s/${name}-${randomExt}`)
     }

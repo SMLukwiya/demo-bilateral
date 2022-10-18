@@ -1,16 +1,18 @@
 <script lang="ts">
     import {onMount} from "svelte";
     import * as Ably from "ably";
+    import {page} from "$app/stores";
 
     let ably_key = import.meta.env.VITE_ABLY_PUBSUB_APIKEY // TODO: handle env better
 
     let left = 50;
     let color: string;
     let bgColor: string;
-    let speed: string;
+    let speed : string;
     let speedChange = false;
     let increment = false;
     let start = false;
+    let started = false;
     let stop = false;
     let addStoppingTransform = false;
     let channel: Ably.Types.RealtimeChannelPromise;
@@ -18,39 +20,41 @@
 
     // generate unique clientId
     const randomId = Math.random().toString(36).slice(-10);
+    const url = $page.url.pathname.split("/");
 
     onMount(() => {
         // TODO
         // - change to token authentication
-        const ably = new Ably.Realtime.Promise({key: ably_key, clientId: randomId});
+        if (randomId) {
+            const ably = new Ably.Realtime.Promise({key: ably_key, clientId: randomId});
+            channel = ably.channels.get(url[url.length - 1]);
+
+            (async() => {
+                await channel.attach();
+                await channel.presence.enter()
+            })();
+
+            channel.subscribe('bgColor', (message) => {
+                bgColor = message.data
+            });
+            channel.subscribe('color', (message) => {
+                color = message.data
+            });
+
+            channel.subscribe('start', (message) => {
+                start = message.data.value;
+            });
+
+            channel.subscribe('stop', (message) => {
+                stop = message.data.value;
+            });
+
+            channel.subscribe('speed', (message) => {
+                speed = message.data.value;
+                speedChange = message.data.changed
+            });
+        }
         
-        channel = ably.channels.get('session');
-
-        (async() => {
-            await channel.attach();
-            await channel.presence.enter()
-        })();
-
-        channel.subscribe('bgColor', (message) => {
-            bgColor = message.data
-        });
-        channel.subscribe('color', (message) => {
-            color = message.data
-        });
-
-        channel.subscribe('start', (message) => {
-            start = message.data.value;
-        });
-
-        channel.subscribe('stop', (message) => {
-            stop = message.data.value;
-        });
-
-        channel.subscribe('speed', (message) => {
-            speed = message.data.value;
-            speedChange = message.data.changed
-        });
-
         return () => {
             channel.presence.leave();
             channel.unsubscribe('session');
@@ -74,6 +78,7 @@
 
     const startSession = () => {
         stop = false;
+        started = true;
         slidingInterval = setInterval(() => {
             slidePosition();
         }, (1000/60)/(+speed/2));
@@ -82,6 +87,7 @@
     const stopSession = () => {
         speedChange = false;
         start = false;
+        started = false;
         clearInterval(slidingInterval);
         if (!increment) {
             slidingInterval = setInterval(() => {
@@ -117,17 +123,17 @@
     }
 
     $: {
-        if (start && !speedChange) {
+        if (start && !speedChange && !started) {
             startSession()
         }
 
-        if (speedChange) {
+        if (speedChange && start) {
             clearInterval(slidingInterval);
             slidingInterval = setInterval(slidePosition, (1000/60)/(+speed/2));
         }
 
-        if (stop) {
-            stopSession()
+        if (stop && started) {
+            stopSession();
         }
     }
 
