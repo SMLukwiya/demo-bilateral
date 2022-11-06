@@ -20,7 +20,7 @@ For a simple demo, check out [here](https://demo-bilateral-7e2hxh87o-smlukwiya.v
 
 ## To run the project
 Git clone the project
-> blockquote You must have an app key from [ably](https://ably.com/) to be able to create real time sessions
+> You must have an app key from [ably](https://ably.com/) to be able to create real time sessions
 
 Once you've cloned and installed dependencies with `yarn`, start a development server:
 
