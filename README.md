@@ -22,13 +22,13 @@ For a simple demo, check out [here](https://demo-bilateral-7e2hxh87o-smlukwiya.v
 Git clone the project
 > You must have an app key from [ably](https://ably.com/) to be able to create real time sessions
 
-Once you've cloned and installed dependencies with `yarn`, start a development server:
+Once you've cloned and installed dependencies with `npm`, start a development server:
 
 ```bash
-yarn dev
+npm run dev
 
 # or start the server and open the app in a new browser tab
-yarn dev -- --open
+npm run dev -- --open
 ```
 
 ## Building
